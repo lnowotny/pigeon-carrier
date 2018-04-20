@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Sign in &middot; Twitter Bootstrap</title>
+    <title>Send message</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -54,10 +54,16 @@
 
     <div class="container">
 
-      <form class="form-signin" action="index.html">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input id="username" type="text" class="input-block-level" placeholder="Email address">
-        <button class="btn btn-large btn-primary" type="submit" onclick="return saveUserName();">Sign in</button>
+      <form class="form-sendMessage">
+        <label for="sender">From:</label>
+		    <input type="text" id="from" name="from" placeholder="return getUserName()">
+        <label for="receiver">To:</label>
+        <input type="text" id="to" name="to" placeholder="Person's email">
+        <label for="address">Street address:</label>
+        <input type="text" id="address" name="address" placeholder="123 Main St, Austin, TX 78756">
+        <label for="message">Subject:</label>
+        <textarea id="subject" name="subject" placeholder="Type message body." style="height:200px"></textarea>
+        <button class="btn btn-large btn-primary" type="submit" onclick="return sendMessage();">Send message</button>
       </form>
 
     </div> <!-- /container -->
