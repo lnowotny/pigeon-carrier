@@ -1,2 +1,2 @@
 # pigeon-carrier
-Sample Blazor application
+Sample HTML5 application
