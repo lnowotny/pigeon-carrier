@@ -16,7 +16,7 @@ function myMap() {
   var marker = new google.maps.Marker({
       position: mapOptions.center,
       title: 'NI 3rd Floor cube 3N.K06',
-      icon: "../pigeon.png"
+      icon: "../pigeonAndLetter.png"
     });
 
   _map = new google.maps.Map(mapCanvas, mapOptions);
@@ -75,6 +75,7 @@ function resetMarker()
 	{
 		_markers[1].setMap(null);
 	}
+	_markers[0].setIcon("../pigeonAndLetter.png");
 }
 
 function startMessageFlying(message)
@@ -82,20 +83,42 @@ function startMessageFlying(message)
 	_currentMessage = message;
 	_percent = 0;
 	(function() {
-	 _timer = setInterval(drawTimedCurve, 100);
+	 _timer = setInterval(drawFlightOutCurve, 100);
 	})();
 	drawCurve(_map);
 }
 
-function drawTimedCurve()
+function startMessageFlyingBack()
+{
+	_percent = 0;
+	_markers[0].setIcon("../pigeon.png");
+	_markers[1].setIcon("../letter.png");
+	(function() {
+	 _timer = setInterval(drawFlightBackCurve, 100);
+	})();
+}
+
+function drawFlightOutCurve()
 {
 	drawCurve(_map, (100 - _percent) / 100);
 	_percent++;
 	if (_percent > 100)
 	{
 		clearInterval(_timer);
-		resetMarker();
 		commitMessage(_currentMessage);
+		startMessageFlyingBack();
+	}
+}
+
+function drawFlightBackCurve()
+{
+	drawCurve(_map, _percent / 100);
+	_percent++;
+	if (_percent > 100)
+	{
+		clearInterval(_timer);
+		resetMarker();
+		_curve.setMap(null);
 	}
 }
 
