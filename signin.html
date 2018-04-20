@@ -61,14 +61,10 @@
 
     <div class="container">
 
-      <form class="form-signin">
+      <form class="form-signin" action="sendMessage.html">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level" placeholder="Email address">
-        <input type="password" class="input-block-level" placeholder="Password">
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+        <input id="username" type="text" class="input-block-level" placeholder="Email address">
+        <button class="btn btn-large btn-primary" type="submit" onclick="return saveUserName();">Sign in</button>
       </form>
 
     </div> <!-- /container -->
@@ -89,6 +85,13 @@
     <script src="bootstrap/js/bootstrap-collapse.js"></script>
     <script src="bootstrap/js/bootstrap-carousel.js"></script>
     <script src="bootstrap/js/bootstrap-typeahead.js"></script>
-
+	<script>
+		function saveUserName()
+		{
+			var input = document.getElementById("username");
+			sessionStorage.setItem("username", input.value);
+			return true;
+		}
+	</script>
   </body>
 </html>
