@@ -41,6 +41,16 @@
         padding: 7px 9px;
       }
 
+      .our-row {
+        display: flex;
+        margin: 100px;
+      }
+
+      .our-column {
+        flex: 100%;
+        padding: 10px;
+      }
+
     </style>
     <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -59,9 +69,9 @@
   <body onload="initializeSendMessageForm(document.forms[0]);">
     <div id="navigationBar"></div>
 
-    <div class="container">
+    <div class="our-row">
 
-      <form class="form-sendMessage">
+      <form class="form-sendMessage" class="our-column">
         <label for="sender">From:</label>
 		    <input type="text" id="from" name="from" placeholder="User's email">
         <label for="receiver">To:</label>
@@ -75,7 +85,7 @@
         <button class="btn btn-large btn-primary" type="submit" onclick="return sendMessage();">Send message</button>
       </form>
 
-      <div id="map" style="width:100%;height:400px;"/>
+      <div class="our-column" id="map" style="width:100%;height:400px;"/>
 
     </div> <!-- /container -->
 

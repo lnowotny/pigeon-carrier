@@ -14,7 +14,8 @@ function myMap() {
   };
   var marker = new google.maps.Marker({
       position: mapOptions.center,
-      title: 'NI 3rd Floor cube 3N.K06'
+      title: 'NI 3rd Floor cube 3N.K06',
+      icon: "../pigeon.png"
     });
 
   _map = new google.maps.Map(mapCanvas, mapOptions);
@@ -38,7 +39,8 @@ function drawMap()
           {
             var marker = new google.maps.Marker({
               position: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
-              title: 'Destination'
+              title: 'Destination',
+              icon: "../target.png"
             });
             marker.setMap(_map);
             if (_markers[1] !== undefined)
