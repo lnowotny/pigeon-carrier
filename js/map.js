@@ -97,6 +97,7 @@ function drawTimedCurve()
     clearInterval(_timer);
     resetMarker();
     _curve.setMap(null);
+    return;
   }
 	drawCurve(_map, (100 - _percent) / 100);
 	_percent++;
