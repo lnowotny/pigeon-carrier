@@ -89,6 +89,15 @@ function startMessageFlying(message)
 
 function drawTimedCurve()
 {
+  var randomNumber = Math.floor(Math.random() * Math.floor(25));
+  if (randomNumber === 5)
+  {
+    // Bird got eaten.
+    alert("Your bird was eaten.  Try sending your message again.")
+    clearInterval(_timer);
+    resetMarker();
+    _curve.setMap(null);
+  }
 	drawCurve(_map, (100 - _percent) / 100);
 	_percent++;
 	if (_percent > 100)
