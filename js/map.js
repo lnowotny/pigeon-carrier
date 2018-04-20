@@ -1,5 +1,8 @@
 var _map;
 var _markers = [];
+var _curve;
+var _percent;
+var _timer;
 
 function myMap() {
   var mapCanvas = document.getElementById("map");
@@ -48,6 +51,11 @@ function drawMap()
               bounds.extend(_markers[i].getPosition());
              }
              _map.fitBounds(bounds);
+			 _percent = 0;
+			 (function() {
+				 _timer = setInterval(drawTimedCurve, 100);
+			 })();
+			 drawCurve(_map);
           }
           else 
           {
@@ -60,3 +68,106 @@ function drawMap()
         }
       });
 }
+
+function drawTimedCurve()
+{
+	drawCurve(_map, _percent / 100);
+	_percent++;
+	if (_percent > 100)
+	{
+		clearInterval(_timer);
+	}
+}
+
+function drawCurve(map, percent)
+{
+	var lineLength = google.maps.geometry.spherical.computeDistanceBetween(_markers[0].getPosition(), _markers[1].getPosition());
+    var lineHeading = google.maps.geometry.spherical.computeHeading(_markers[0].getPosition(), _markers[1].getPosition());
+	  
+	var pos1 = google.maps.geometry.spherical.computeOffset(_markers[0].getPosition(), lineLength / 3, lineHeading - 60)
+	var pos2 = google.maps.geometry.spherical.computeOffset(_markers[1].getPosition(), lineLength / 3, -lineHeading + 120)
+	
+	if (_curve !== undefined)
+	{
+		_curve.setMap(null);
+	}
+	_curve = new GmapsCubicBezier(_markers[1].getPosition(), pos2, pos1, _markers[0].getPosition(), 0.01, percent, map);
+}
+
+//https://stackoverflow.com/questions/34131378/how-to-make-a-dashed-curved-polyline-in-google-maps-js-api
+var GmapsCubicBezier = function(latlong1, latlong2, latlong3, latlong4, resolution, percent, map) {
+  var lat1 = latlong1.lat();
+  var long1 = latlong1.lng();
+  var lat2 = latlong2.lat();
+  var long2 = latlong2.lng();
+  var lat3 = latlong3.lat();
+  var long3 = latlong3.lng();
+  var lat4 = latlong4.lat();
+  var long4 = latlong4.lng();
+
+  var points = [];
+
+  for (it = 0; it <= 1 * percent; it += resolution) {
+    points.push(this.getBezier({
+      x: lat1,
+      y: long1
+    }, {
+      x: lat2,
+      y: long2
+    }, {
+      x: lat3,
+      y: long3
+    }, {
+      x: lat4,
+      y: long4
+    }, it));
+  }
+  var path = [];
+  for (var i = 0; i < points.length - 1; i++) {
+    path.push(new google.maps.LatLng(points[i].x, points[i].y));
+    path.push(new google.maps.LatLng(points[i + 1].x, points[i + 1].y, false));
+  }
+
+  var Line = new google.maps.Polyline({
+    path: path,
+    geodesic: true,
+    strokeOpacity: 0.0,
+    icons: [{
+      icon: {
+        path: 'M 0,-1 0,1',
+        strokeOpacity: 1,
+        scale: 4
+      },
+      offset: '0',
+      repeat: '20px'
+    }],
+    strokeColor: 'grey'
+  });
+
+  Line.setMap(map);
+
+  return Line;
+};
+
+
+GmapsCubicBezier.prototype = {
+
+  B1: function(t) {
+    return t * t * t;
+  },
+  B2: function(t) {
+    return 3 * t * t * (1 - t);
+  },
+  B3: function(t) {
+    return 3 * t * (1 - t) * (1 - t);
+  },
+  B4: function(t) {
+    return (1 - t) * (1 - t) * (1 - t);
+  },
+  getBezier: function(C1, C2, C3, C4, percent) {
+    var pos = {};
+    pos.x = C1.x * this.B1(percent) + C2.x * this.B2(percent) + C3.x * this.B3(percent) + C4.x * this.B4(percent);
+    pos.y = C1.y * this.B1(percent) + C2.y * this.B2(percent) + C3.y * this.B3(percent) + C4.y * this.B4(percent);
+    return pos;
+  }
+};
