@@ -1,0 +1,23 @@
+﻿@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>Login</h1>
+
+<input placeholder="Your email" bind="@email" />
+<button onclick="@LoginWithEmail">Login</button>
+
+@functions {
+    public string NextPage { get; set; }
+    string email;
+
+    void LoginWithEmail()
+    {
+        if (!string.IsNullOrEmpty(email))
+        {
+            if (string.IsNullOrEmpty(NextPage))
+            {
+                NextPage = "/";
+            }
+            UriHelper.NavigateTo(NextPage);
+        }
+    }
+}
