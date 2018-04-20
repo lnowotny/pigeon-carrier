@@ -62,15 +62,17 @@ function sendMessage()
 
 function commitMessage(message)
 {
-	document.getElementById("to").value = "";
-	document.getElementById("address").value = "";
-    document.getElementById("subject").value = "";
-	
-	var messages = getMessageHistory();
-    messages.push(message);
+	if (message !== null)
+	{
+		document.getElementById("to").value = "";
+		document.getElementById("address").value = "";
+		document.getElementById("subject").value = "";
+		
+		var messages = getMessageHistory();
+		messages.push(message);
 
-    var messagesString = JSON.stringify(messages);
-    localStorage.setItem("carrier-pigeon-history", messagesString);
-	
+		var messagesString = JSON.stringify(messages);
+		localStorage.setItem("carrier-pigeon-history", messagesString);
+	}
 	document.getElementById("send").disabled = false;
 }

@@ -68,10 +68,10 @@ function drawMap()
       });
 }
 
-function resetMarker()
+function resetMarker(clearDestination)
 {
 	_markers[0].setPosition(_originPosition);
-	if (_markers[1] !== undefined)
+	if (clearDestination && _markers[1] !== undefined)
 	{
 		_markers[1].setMap(null);
 	}
@@ -100,14 +100,15 @@ function startMessageFlyingBack()
 
 function drawFlightOutCurve()
 {
-  var randomNumber = Math.floor(Math.random() * Math.floor(25));
+  var randomNumber = Math.floor(Math.random() * Math.floor(200));
   if (randomNumber === 5)
   {
     // Bird got eaten.
     alert("Your bird was eaten.  Try sending your message again.")
     clearInterval(_timer);
-    resetMarker();
+    resetMarker(false);
     _curve.setMap(null);
+	commitMessage(null);
     return;
   }
 	drawCurve(_map, (100 - _percent) / 100);
@@ -127,7 +128,7 @@ function drawFlightBackCurve()
 	if (_percent > 100)
 	{
 		clearInterval(_timer);
-		resetMarker();
+		resetMarker(true);
 		_curve.setMap(null);
 	}
 }
