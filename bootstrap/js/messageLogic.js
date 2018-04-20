@@ -57,3 +57,7 @@ function myMap() {
     var map = new google.maps.Map(mapCanvas, mapOptions);
     marker.setMap(map);
 }
+
+function setMarkerOnMap(map, marker) {
+  marker.setMap(map);
+}
