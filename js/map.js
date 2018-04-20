@@ -3,11 +3,14 @@ var _markers = [];
 var _curve;
 var _percent;
 var _timer;
+var _originPosition;
+var _currentMessage;
 
 function myMap() {
+	_originPosition = new google.maps.LatLng(30.4083821, -97.72624439999998)
   var mapCanvas = document.getElementById("map");
   var mapOptions = {
-      center: new google.maps.LatLng(30.4083821, -97.72624439999998),
+      center: _originPosition,
       zoom: 10
   };
   var marker = new google.maps.Marker({
@@ -51,11 +54,7 @@ function drawMap()
               bounds.extend(_markers[i].getPosition());
              }
              _map.fitBounds(bounds);
-			 _percent = 0;
-			 (function() {
-				 _timer = setInterval(drawTimedCurve, 100);
-			 })();
-			 drawCurve(_map);
+			 
           }
           else 
           {
@@ -69,33 +68,54 @@ function drawMap()
       });
 }
 
+function resetMarker()
+{
+	_markers[0].setPosition(_originPosition);
+	if (_markers[1] !== undefined)
+	{
+		_markers[1].setMap(null);
+	}
+}
+
+function startMessageFlying(message)
+{
+	_currentMessage = message;
+	_percent = 0;
+	(function() {
+	 _timer = setInterval(drawTimedCurve, 100);
+	})();
+	drawCurve(_map);
+}
+
 function drawTimedCurve()
 {
-	drawCurve(_map, _percent / 100);
+	drawCurve(_map, (100 - _percent) / 100);
 	_percent++;
 	if (_percent > 100)
 	{
 		clearInterval(_timer);
+		resetMarker();
+		commitMessage(_currentMessage);
 	}
 }
 
 function drawCurve(map, percent)
 {
-	var lineLength = google.maps.geometry.spherical.computeDistanceBetween(_markers[0].getPosition(), _markers[1].getPosition());
-    var lineHeading = google.maps.geometry.spherical.computeHeading(_markers[0].getPosition(), _markers[1].getPosition());
+	var lineLength = google.maps.geometry.spherical.computeDistanceBetween(_originPosition, _markers[1].getPosition());
+    var lineHeading = google.maps.geometry.spherical.computeHeading(_originPosition, _markers[1].getPosition());
 	  
-	var pos1 = google.maps.geometry.spherical.computeOffset(_markers[0].getPosition(), lineLength / 3, lineHeading - 60)
+	var pos1 = google.maps.geometry.spherical.computeOffset(_originPosition, lineLength / 3, lineHeading - 60)
 	var pos2 = google.maps.geometry.spherical.computeOffset(_markers[1].getPosition(), lineLength / 3, -lineHeading + 120)
 	
 	if (_curve !== undefined)
 	{
 		_curve.setMap(null);
 	}
-	_curve = new GmapsCubicBezier(_markers[1].getPosition(), pos2, pos1, _markers[0].getPosition(), 0.01, percent, map);
+	_curve = new GmapsCubicBezier(_originPosition, pos1, pos2, _markers[1].getPosition(), 0.01, percent, map, _markers[0]);
 }
 
 //https://stackoverflow.com/questions/34131378/how-to-make-a-dashed-curved-polyline-in-google-maps-js-api
-var GmapsCubicBezier = function(latlong1, latlong2, latlong3, latlong4, resolution, percent, map) {
+var GmapsCubicBezier = function(latlong1, latlong2, latlong3, latlong4, resolution, percent, map, marker) {
   var lat1 = latlong1.lat();
   var long1 = latlong1.lng();
   var lat2 = latlong2.lat();
@@ -106,7 +126,7 @@ var GmapsCubicBezier = function(latlong1, latlong2, latlong3, latlong4, resoluti
   var long4 = latlong4.lng();
 
   var points = [];
-
+  
   for (it = 0; it <= 1 * percent; it += resolution) {
     points.push(this.getBezier({
       x: lat1,
@@ -126,6 +146,11 @@ var GmapsCubicBezier = function(latlong1, latlong2, latlong3, latlong4, resoluti
   for (var i = 0; i < points.length - 1; i++) {
     path.push(new google.maps.LatLng(points[i].x, points[i].y));
     path.push(new google.maps.LatLng(points[i + 1].x, points[i + 1].y, false));
+  }
+  
+  if (marker !== undefined && points.length > 0)
+  {
+	  marker.setPosition(new google.maps.LatLng(points[points.length - 1].x, points[points.length - 1].y))
   }
 
   var Line = new google.maps.Polyline({

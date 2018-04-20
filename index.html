@@ -89,7 +89,7 @@
                onfocusout="drawMap()" autocomplete="off">
         <label for="message">Subject:</label>
         <textarea id="subject" name="subject" placeholder="Type message body." style="height:200px"></textarea>
-        <button class="btn btn-large btn-primary" type="submit" onclick="return sendMessage();">Send message</button>
+        <button class="btn btn-large btn-primary" type="button" onclick="return sendMessage();" id="send">Send message</button>
       </form>
       <div class="our-column">
         <img class="nigel" id="over_map" z-index="2" src="nigel.jpg" hidden="true" />
