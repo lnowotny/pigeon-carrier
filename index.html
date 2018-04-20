@@ -46,7 +46,7 @@
 
     <script src="bootstrap/js/jquery-3.3.1.min.js" type="text/javascript"></script>
     <script src="js/navigation.js" type="text/javascript"></script>
-    <script src="bootstrap/js/messageLogic.js"></script>
+    <script src="js/messageLogic.js" type="text/javascript"></script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -54,14 +54,14 @@
     <![endif]-->
   </head>
 
-  <body>
+  <body onload="initializeSendMessageForm(document.forms[0]);">
     <div id="navigationBar"></div>
 
     <div class="container">
 
       <form class="form-sendMessage">
         <label for="sender">From:</label>
-		    <input type="text" id="from" name="from" placeholder="return getUserName()">
+		    <input type="text" id="from" name="from" placeholder="User's email">
         <label for="receiver">To:</label>
         <input type="text" id="to" name="to" placeholder="Person's email">
         <label for="address">Street address:</label>
