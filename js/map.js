@@ -4,6 +4,7 @@ var _curve;
 var _percent;
 var _timer;
 var _originPosition;
+var _currentMessage;
 
 function myMap() {
 	_originPosition = new google.maps.LatLng(30.4083821, -97.72624439999998)
@@ -53,11 +54,7 @@ function drawMap()
               bounds.extend(_markers[i].getPosition());
              }
              _map.fitBounds(bounds);
-			 _percent = 0;
-			 (function() {
-				 _timer = setInterval(drawTimedCurve, 100);
-			 })();
-			 drawCurve(_map);
+			 
           }
           else 
           {
@@ -74,6 +71,20 @@ function drawMap()
 function resetMarker()
 {
 	_markers[0].setPosition(_originPosition);
+	if (_markers[1] !== undefined)
+	{
+		_markers[1].setMap(null);
+	}
+}
+
+function startMessageFlying(message)
+{
+	_currentMessage = message;
+	_percent = 0;
+	(function() {
+	 _timer = setInterval(drawTimedCurve, 100);
+	})();
+	drawCurve(_map);
 }
 
 function drawTimedCurve()
@@ -83,8 +94,8 @@ function drawTimedCurve()
 	if (_percent > 100)
 	{
 		clearInterval(_timer);
-		drawCurve(_map, 1);
 		resetMarker();
+		commitMessage(_currentMessage);
 	}
 }
 

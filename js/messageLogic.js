@@ -54,10 +54,23 @@ function sendMessage()
     message.address = document.getElementById("address").value;
     message.content = document.getElementById("subject").value;
     message.timestamp = Date.now();
+	
+	document.getElementById("send").disabled = true;
 
-    var messages = getMessageHistory();
+	startMessageFlying(message);
+}
+
+function commitMessage(message)
+{
+	document.getElementById("to").value = "";
+	document.getElementById("address").value = "";
+    document.getElementById("subject").value = "";
+	
+	var messages = getMessageHistory();
     messages.push(message);
 
     var messagesString = JSON.stringify(messages);
     localStorage.setItem("carrier-pigeon-history", messagesString);
+	
+	document.getElementById("send").disabled = false;
 }
