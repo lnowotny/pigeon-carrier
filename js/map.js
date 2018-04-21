@@ -104,11 +104,49 @@ function drawFlightOutCurve()
   if (randomNumber === 5)
   {
     // Bird got eaten.
-    alert("Your bird was eaten.  Try sending your message again.")
+    var nigel = document.getElementById("over_map");
+    nigel.hidden = false;
+    var scale = Math.pow(2, _map.getZoom());
+    var nw = new google.maps.LatLng(
+        _map.getBounds().getNorthEast().lat(),
+        _map.getBounds().getSouthWest().lng()
+    );
+    var worldCoordinateNW = _map.getProjection().fromLatLngToPoint(nw);
+    var worldCoordinate = _map.getProjection().fromLatLngToPoint(_markers[0].getPosition());
+    var pixelOffset = new google.maps.Point(
+        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
+    );
+
+    var pos = 0;
+    var topOffset = 0;
+    var id = setInterval(frame, 10);
+    function frame() {
+      if (pos == 200)
+      {
+        clearInterval(id);
+        nigel.hidden = true;
+        alert("Your bird was eaten.  Try sending your message again.")
+      }
+      else
+      {
+        pos++;
+        if (pos < 100)
+        {
+          topOffset++;
+        }
+        else
+        {
+          topOffset--;
+        }
+        nigel.style.top = pixelOffset.y + topOffset + "px";
+        nigel.style.left = pixelOffset.x + pos + "px";
+      }
+    };
     clearInterval(_timer);
     resetMarker(false);
     _curve.setMap(null);
-	commitMessage(null);
+    commitMessage(null);
     return;
   }
 	drawCurve(_map, (100 - _percent) / 100);
